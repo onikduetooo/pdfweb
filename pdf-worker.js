@@ -1,6 +1,4 @@
-/* ══════════════════════════════════════════════════════════
-   PixelPress v40 — Modern PDF Worker
-   ══════════════════════════════════════════════════════════ */
+/* PixelPress v42 — PDF Worker */
 'use strict';
 
 const PAGE_SIZES = {
@@ -219,9 +217,8 @@ function buildPdfBlob(prepared, settings) {
 
   const pages = prepared.map((p) => {
     let pw, ph;
-    if (settings.pageSize === 'original') {
-      pw = p.imgW; ph = p.imgH;
-    } else {
+    if (settings.pageSize === 'original') { pw = p.imgW; ph = p.imgH; }
+    else {
       const size = PAGE_SIZES[settings.pageSize] || PAGE_SIZES.a4;
       let orientation = settings.orientation;
       if (settings.orientation === 'auto') orientation = p.autoOrientation;
@@ -311,7 +308,7 @@ function buildPdfBlob(prepared, settings) {
   offsets[infoObj] = offset;
   const infoExtra = settings.pdfA ? '/GTS_PDFA1Version (PDF/A-1b) ' : '';
   txt(infoObj + ' 0 obj\n<< /Title (' + escapePdfString(metaTitle) + ') /Author (' +
-      escapePdfString(metaAuthor) + ') /Producer (PixelPress Image to PDF Converter) /Creator (PixelPress) ' +
+      escapePdfString(metaAuthor) + ') /Producer (PixelPress) /Creator (PixelPress) ' +
       infoExtra + '/CreationDate (' + pdfDate(now) + ') /ModDate (' + pdfDate(now) + ') >>\nendobj\n');
 
   const xrefStart = offset;

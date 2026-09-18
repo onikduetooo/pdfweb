@@ -1,5 +1,5 @@
-const CACHE_VERSION = 'pixelpress-v40';
-const RUNTIME_CACHE = 'pixelpress-runtime-v40';
+const CACHE_VERSION = 'pixelpress-v43';
+const RUNTIME_CACHE = 'pixelpress-runtime-v43';
 
 const CORE = [
   './',
@@ -7,7 +7,12 @@ const CORE = [
   './style.css',
   './script.js',
   './pdf-worker.js',
-  './manifest.webmanifest'
+  './manifest.webmanifest',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './icons/icon-maskable-192.png',
+  './icons/icon-maskable-512.png',
+  './icons/apple-touch-icon.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -78,7 +83,7 @@ self.addEventListener('fetch', (event) => {
     const cached = await caches.match(req);
     if (cached) {
       fetch(req).then((res) => {
-        if (res && res.status === 200) {
+        if (res && res.status === 200 && res.type === 'basic') {
           caches.open(RUNTIME_CACHE).then((c) => c.put(req, res.clone())).catch(() => {});
         }
       }).catch(() => {});
@@ -86,7 +91,7 @@ self.addEventListener('fetch', (event) => {
     }
     try {
       const res = await fetch(req);
-      if (res && res.status === 200) {
+      if (res && res.status === 200 && res.type === 'basic') {
         const copy = res.clone();
         caches.open(RUNTIME_CACHE).then((c) => c.put(req, copy)).catch(() => {});
       }

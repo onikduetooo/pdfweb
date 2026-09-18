@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>PixelPress Icon Generator</title>
+<style>
+  body{font-family:system-ui;padding:40px;max-width:700px;margin:0 auto;background:#f5f5f7}
+  h1{font-size:22px;margin-bottom:8px}
+  p{color:#555;line-height:1.6;margin-bottom:20px}
+  code{background:#e8e8ed;padding:2px 6px;border-radius:4px;font-size:13px}
+  button{padding:12px 24px;border:0;border-radius:8px;background:#34c759;color:#fff;font-size:15px;font-weight:600;cursor:pointer;margin-right:8px;margin-bottom:8px}
+  button:hover{background:#0a8a3d}
+  #preview{display:flex;gap:16px;flex-wrap:wrap;margin-top:24px;align-items:flex-end}
+  .icon-preview{text-align:center}
+  .icon-preview span{display:block;font-size:12px;color:#666;margin-top:6px}
+  canvas{border:1px solid #ddd;border-radius:8px;display:block}
+  .status{margin-top:16px;padding:12px;background:#eafaf0;border-radius:8px;color:#0a8a3d;font-size:13px;display:none}
+</style>
+</head>
+<body>
+<h1>PixelPress Icon Generator</h1>
+<p>নিচের বাটনে ক্লিক করুন — সব icons আপনার Downloads ফোল্ডারে সেভ হবে। এরপর <code>icons/</code> ফোল্ডারে রাখুন এবং Netlify-তে deploy করুন।</p>
+
+<button onclick="downloadAll()">⬇️ সব Icons Download করুন</button>
+<button onclick="downloadSplash()" style="background:#0071e3">📱 iOS Splash Screens Download</button>
+
+<div id="preview"></div>
+<div class="status" id="status"></div>
+
+<script>
+function drawIcon(size, maskable) {
+  const c = document.createElement('canvas');
+  c.width = size; c.height = size;
+  const ctx = c.getContext('2d');
+  const g = ctx.createLinearGradient(0, 0, size, size);
+  g.addColorStop(0, '#34c759');
+  g.addColorStop(0.5, '#2aa84a');
+  g.addColorStop(1, '#0a8a3d');
+
+  if (maskable) {
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, size, size);
+  } else {
+    const r = size * 0.22;
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(r, 0);
+    ctx.lineTo(size - r, 0);
+    ctx.quadraticCurveTo(size, 0, size, r);
+    ctx.lineTo(size, size - r);
+    ctx.quadraticCurveTo(size, size, size - r, size);
+    ctx.lineTo(r, size);
+    ctx.quadraticCurveTo(0, size, 0, size - r);
+    ctx.lineTo(0, r);
+    ctx.quadraticCurveTo(0, 0, r, 0);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  const s = size * (maskable ? 0.42 : 0.55);
+  const cx = size / 2, cy = size / 2;
+
+  ctx.fillStyle = 'rgba(255,255,255,0.95)';
+  ctx.beginPath();
+  ctx.moveTo(cx - s * 0.35, cy + s * 0.35);
+  ctx.quadraticCurveTo(cx - s * 0.55, cy - s * 0.15, cx + s * 0.05, cy - s * 0.55);
+  ctx.quadraticCurveTo(cx + s * 0.55, cy - s * 0.1, cx + s * 0.35, cy + s * 0.4);
+  ctx.quadraticCurveTo(cx, cy + s * 0.55, cx - s * 0.35, cy + s * 0.35);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.strokeStyle = 'rgba(10,138,61,0.55)';
+  ctx.lineWidth = size * 0.018;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(cx + s * 0.05, cy - s * 0.55);
+  ctx.quadraticCurveTo(cx + s * 0.15, cy, cx + s * 0.35, cy + s * 0.4);
+  ctx.stroke();
+
+  return c;
+}
+
+function downloadCanvas(canvas, filename) {
+  canvas.toBlob(function(blob) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }, 'image/png');
+}
+
+function showStatus(msg) {
+  const s = document.getElementById('status');
+  s.textContent = msg;
+  s.style.display = 'block';
+}
+
+function downloadAll() {
+  const sizes = [
+    { size: 192, name: 'icon-192.png', maskable: false },
+    { size: 512, name: 'icon-512.png', maskable: false },
+    { size: 192, name: 'icon-maskable-192.png', maskable: true },
+    { size: 512, name: 'icon-maskable-512.png', maskable: true },
+    { size: 180, name: 'apple-touch-icon.png', maskable: false }
+  ];
+  showStatus('✅ ' + sizes.length + 'টি আইকন ডাউনলোড হচ্ছে… সেগুলো আপনার Downloads ফোল্ডারে চেক করুন।');
+  sizes.forEach(function(item, i) {
+    setTimeout(function() {
+      const c = drawIcon(item.size, item.maskable);
+      downloadCanvas(c, item.name);
+    }, i * 400);
+  });
+}
+
+function downloadSplash() {
+  const splashes = [
+    { w: 640, h: 1136 },
+    { w: 750, h: 1334 },
+    { w: 1170, h: 2532 },
+    { w: 1284, h: 2778 }
+  ];
+  showStatus('📱 iOS Splash screens ডাউনলোড হচ্ছে…');
+  splashes.forEach(function(item, i) {
+    setTimeout(function() {
+      const c = document.createElement('canvas');
+      c.width = item.w; c.height = item.h;
+      const ctx = c.getContext('2d');
+      const g = ctx.createLinearGradient(0, 0, item.w, item.h);
+      g.addColorStop(0, '#ffffff');
+      g.addColorStop(1, '#eafaf0');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, item.w, item.h);
+      const logoSize = Math.min(item.w, item.h) * 0.3;
+      const logo = drawIcon(logoSize, false);
+      ctx.drawImage(logo, (item.w - logoSize) / 2, (item.h - logoSize) / 2 - 40);
+      ctx.fillStyle = '#1d1d1f';
+      ctx.font = 'bold ' + (item.w * 0.05) + 'px -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('PixelPress', item.w / 2, item.h / 2 + logoSize / 2 + 30);
+      downloadCanvas(c, 'splash-' + item.w + 'x' + item.h + '.png');
+    }, i * 500);
+  });
+}
+
+window.addEventListener('load', function() {
+  const p = document.getElementById('preview');
+  [64, 96, 192].forEach(function(size) {
+    const c = drawIcon(size, false);
+    const d = document.createElement('div');
+    d.className = 'icon-preview';
+    d.appendChild(c);
+    const s = document.createElement('span');
+    s.textContent = size + '×' + size;
+    d.appendChild(s);
+    p.appendChild(d);
+  });
+});
+</script>
+</body>
+</html>

@@ -1,6 +1,4 @@
-/* ══════════════════════════════════════════════════════════
-   PixelPress v40 — Complete Script
-   ══════════════════════════════════════════════════════════ */
+/* PixelPress v43 — Performance Optimized */
 (function () {
   'use strict';
 
@@ -23,8 +21,7 @@
   })();
 
   function safe(label, fn) {
-    try { fn(); }
-    catch (err) { console.warn('[PixelPress] ' + label + ':', err && err.message); }
+    try { fn(); } catch (err) { console.warn('[PixelPress] ' + label + ':', err && err.message); }
   }
 
   const CONFIG = {
@@ -35,9 +32,9 @@
   };
 
   const SETTINGS_KEY = 'pp-settings-v3';
-  const PP_BLOCK_KEY = 'pp-install-blocked-v11';
-  const PP_LATER_KEY = 'pp-install-later-v11';
-  const PP_INSTALLED_KEY = 'pp-installed-v2';
+  const PP_BLOCK_KEY = 'pp-install-blocked-v12';
+  const PP_LATER_KEY = 'pp-install-later-v12';
+  const PP_INSTALLED_KEY = 'pp-installed-v3';
 
   const state = { items: [], uid: 0, busy: false, pdfBlob: null, pdfUrl: null, pdfName: null };
   const installState = {
@@ -69,20 +66,13 @@
     el.watermarkOpVal = $('#opt-watermark-opval'); el.metaToggle = $('#opt-meta');
     el.metaOpts = $('#meta-opts'); el.metaTitle = $('#opt-meta-title');
     el.metaAuthor = $('#opt-meta-author'); el.pdfaToggle = $('#opt-pdfa');
-    el.installTip = $('#install-tip');
-    el.installTitle = $('#install-title-text');
-    el.installDesc = $('#install-desc');
-    el.installIcon = $('#install-icon');
-    el.installAction = $('#install-action');
-    el.installActionLabel = $('#install-action-label');
-    el.installClose = $('#install-close');
-    el.installNever = $('#install-never');
-    el.installChip = $('#install-chip');
-    el.installModal = $('#install-modal');
-    el.installModalClose = $('#install-modal-close');
-    el.installModalIcon = $('#install-modal-icon');
-    el.installModalTitle = $('#install-modal-title');
-    el.installModalSubtitle = $('#install-modal-subtitle');
+    el.installTip = $('#install-tip'); el.installTitle = $('#install-title-text');
+    el.installDesc = $('#install-desc'); el.installIcon = $('#install-icon');
+    el.installAction = $('#install-action'); el.installActionLabel = $('#install-action-label');
+    el.installClose = $('#install-close'); el.installNever = $('#install-never');
+    el.installChip = $('#install-chip'); el.installModal = $('#install-modal');
+    el.installModalClose = $('#install-modal-close'); el.installModalIcon = $('#install-modal-icon');
+    el.installModalTitle = $('#install-modal-title'); el.installModalSubtitle = $('#install-modal-subtitle');
     el.installTabs = $('#install-tabs');
     el.imgModal = $('#img-modal'); el.imgModalImg = $('#img-modal-img');
     el.imgModalTitle = $('#img-modal-title'); el.imgModalMeta = $('#img-modal-meta');
@@ -109,7 +99,6 @@
   function sanitizeFilename(s) {
     return String(s || '').replace(/[\\/:*?"<>|\u0000-\u001f]/g, '-').replace(/\s+/g, ' ').trim().slice(0, 80);
   }
-
   function setCookie(name, value, days) {
     try {
       const d = new Date();
@@ -140,18 +129,24 @@
     });
   }
 
+  /* ═══ SCROLL PROGRESS — uses transform:scaleX for 60fps ═══ */
   function initScrollProgress() {
     if (!el.scrollProgress) return;
-    let ticking = false;
+    let raf = null;
+    let lastPct = -1;
     function update() {
       const h = document.documentElement;
       const max = h.scrollHeight - h.clientHeight;
-      const pct = max > 0 ? (h.scrollTop / max) * 100 : 0;
-      el.scrollProgress.style.width = pct + '%';
-      ticking = false;
+      const pct = max > 0 ? Math.round((h.scrollTop / max) * 100) : 0;
+      if (pct !== lastPct) {
+        el.scrollProgress.style.transform = 'scaleX(' + (pct / 100) + ')';
+        lastPct = pct;
+      }
+      raf = null;
     }
     window.addEventListener('scroll', function () {
-      if (!ticking) { requestAnimationFrame(update); ticking = true; }
+      if (raf) return;
+      raf = requestAnimationFrame(update);
     }, { passive: true });
     update();
   }
@@ -243,23 +238,30 @@
     });
   }
 
+  /* ═══ HEADER SCROLL — cached state, no repeated DOM writes ═══ */
   function initHeaderScroll() {
     if (!el.header) return;
-    let ticking = false;
+    let raf = null;
+    let lastScrolled = false;
+    let lastFabVisible = false;
     function onScroll() {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(function () {
-        if (window.scrollY > 12) el.header.classList.add('is-scrolled');
-        else el.header.classList.remove('is-scrolled');
-        if (el.scrollFab) {
-          if (window.scrollY > 600) el.scrollFab.classList.add('is-visible');
-          else el.scrollFab.classList.remove('is-visible');
-        }
-        ticking = false;
-      });
+      const sy = window.scrollY;
+      const shouldBeScrolled = sy > 12;
+      const shouldFabShow = sy > 600;
+      if (shouldBeScrolled !== lastScrolled) {
+        el.header.classList.toggle('is-scrolled', shouldBeScrolled);
+        lastScrolled = shouldBeScrolled;
+      }
+      if (el.scrollFab && shouldFabShow !== lastFabVisible) {
+        el.scrollFab.classList.toggle('is-visible', shouldFabShow);
+        lastFabVisible = shouldFabShow;
+      }
+      raf = null;
     }
-    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('scroll', function () {
+      if (raf) return;
+      raf = requestAnimationFrame(onScroll);
+    }, { passive: true });
     onScroll();
   }
 
@@ -277,7 +279,7 @@
         setTimeout(function () { entry.target.classList.add('is-visible'); }, delay);
         io.unobserve(entry.target);
       });
-    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    }, { threshold: 0.05, rootMargin: '100px 0px' });
     els.forEach(function (e) { io.observe(e); });
   }
 
@@ -410,15 +412,9 @@
     }
 
     search.addEventListener('input', function (e) { query = e.target.value; apply(); });
-
     if (clear) clear.addEventListener('click', function (e) {
-      e.preventDefault();
-      search.value = '';
-      query = '';
-      search.focus();
-      apply();
+      e.preventDefault(); search.value = ''; query = ''; search.focus(); apply();
     });
-
     cats.forEach(function (btn) {
       btn.addEventListener('click', function () {
         const cat = btn.dataset.cat;
@@ -431,7 +427,6 @@
         apply();
       });
     });
-
     if (reset) reset.addEventListener('click', function () {
       search.value = ''; query = ''; activeCat = 'all';
       cats.forEach(function (b) {
@@ -441,8 +436,77 @@
       });
       apply();
     });
-
     apply();
+  }
+
+  function initCommandPalette() {
+    const dlg = document.getElementById('cmd-palette');
+    const input = document.getElementById('cmd-input');
+    const list = document.getElementById('cmd-list');
+    const trigger = document.getElementById('cmd-trigger');
+    if (!dlg || !input || !list) return;
+
+    const COMMANDS = [
+      { label:'Go to Home', icon:'i-arrow-up', hint:'H', action:function(){ scrollTo('#top'); } },
+      { label:'Open Converter', icon:'i-file-pdf', hint:'C', action:function(){ scrollTo('#converter'); } },
+      { label:'View Features', icon:'i-sparkles', hint:'F', action:function(){ scrollTo('#features'); } },
+      { label:'How it works', icon:'i-play', hint:'W', action:function(){ scrollTo('#how-it-works'); } },
+      { label:'Frequently Asked', icon:'i-search', hint:'Q', action:function(){ scrollTo('#faq'); } },
+      { label:'Upload Images', icon:'i-upload', hint:'U', action:function(){ try{dlg.close();}catch(e){} var f=document.getElementById('file-input'); if(f) f.click(); } },
+      { label:'Get App', icon:'i-leaf', hint:'I', action:function(){ try{dlg.close();}catch(e){} showInstallTip(); } },
+      { label:'Toggle Theme', icon:'i-moon', hint:'T', action:function(){ try{dlg.close();}catch(e){} var t=document.getElementById('theme-toggle'); if(t) t.click(); } }
+    ];
+
+    function scrollTo(sel) {
+      try { dlg.close(); } catch (e) {}
+      const t = document.querySelector(sel);
+      if (t) smartScrollTo(t, { block: 'start' });
+    }
+
+    let selected = 0;
+    let filtered = COMMANDS.slice();
+
+    function render() {
+      list.innerHTML = filtered.map(function (c, i) {
+        return '<li class="cmd-palette__item' + (i === selected ? ' is-selected' : '') + '" role="option" aria-selected="' + (i === selected) + '" data-idx="' + i + '">' +
+          '<svg class="ic" aria-hidden="true"><use href="#' + c.icon + '"/></svg>' +
+          '<span>' + c.label + '</span>' +
+          (c.hint ? '<kbd>' + c.hint + '</kbd>' : '') +
+        '</li>';
+      }).join('');
+      const sel = list.querySelector('.is-selected');
+      if (sel) sel.scrollIntoView({ block: 'nearest' });
+    }
+    function filter(q) {
+      const s = q.trim().toLowerCase();
+      filtered = s ? COMMANDS.filter(function (c) { return c.label.toLowerCase().includes(s); }) : COMMANDS.slice();
+      selected = 0;
+      render();
+    }
+    function run() { const cmd = filtered[selected]; if (cmd) cmd.action(); }
+
+    if (trigger) trigger.addEventListener('click', function () {
+      if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+      input.value = ''; filter(''); requestAnimationFrame(function () { input.focus(); });
+    });
+    input.addEventListener('input', function (e) { filter(e.target.value); });
+    dlg.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowDown') { e.preventDefault(); selected = Math.min(selected + 1, filtered.length - 1); render(); }
+      if (e.key === 'ArrowUp') { e.preventDefault(); selected = Math.max(selected - 1, 0); render(); }
+      if (e.key === 'Enter') { e.preventDefault(); run(); }
+      if (e.key === 'Escape') { try { dlg.close(); } catch (er) {} }
+    });
+    list.addEventListener('click', function (e) {
+      const item = e.target.closest('.cmd-palette__item');
+      if (!item) return;
+      selected = Number(item.dataset.idx); run();
+    });
+    document.addEventListener('keydown', function (e) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        if (trigger) trigger.click();
+      }
+    });
   }
 
   function initUpload() {
@@ -462,8 +526,7 @@
     }
     if (el.addMore) el.addMore.addEventListener('click', function () { el.fileInput.click(); });
     el.fileInput.addEventListener('change', function (e) {
-      handleFiles(e.target.files);
-      e.target.value = '';
+      handleFiles(e.target.files); e.target.value = '';
     });
     ['dragenter','dragover'].forEach(function (evt) {
       el.dropzone.addEventListener(evt, function (e) {
@@ -499,13 +562,11 @@
       if (file.size > CONFIG.maxFileSize) { tooBig++; continue; }
       try {
         const item = await loadImageItem(file);
-        state.items.push(item);
-        added++;
+        state.items.push(item); added++;
       } catch (err) { rejected++; }
     }
     if (added) {
-      renderGallery();
-      revealWorkspace();
+      renderGallery(); revealWorkspace();
       if (el.filename && !el.filename.value && state.items[0]) {
         el.filename.placeholder = state.items[0].name.replace(/\.[^.]+$/, '').slice(0, 40) || 'document';
       }
@@ -540,8 +601,7 @@
     const frag = document.createDocumentFragment();
     state.items.forEach(function (item, i) {
       const li = document.createElement('li');
-      li.className = 'thumb';
-      li.draggable = true;
+      li.className = 'thumb'; li.draggable = true;
       li.dataset.id = String(item.id);
       li.style.animationDelay = (i * 40) + 'ms';
       li.innerHTML =
@@ -583,16 +643,13 @@
     if (idx === -1) return;
     const removed = state.items.splice(idx, 1)[0];
     if (removed && removed.url) URL.revokeObjectURL(removed.url);
-    renderGallery();
-    showToast('Image removed.');
+    renderGallery(); showToast('Image removed.');
   }
   function clearAll() {
     if (!state.items.length) return;
     if (!window.confirm('Remove all ' + state.items.length + ' image(s)?')) return;
     state.items.forEach(function (i) { if (i.url) URL.revokeObjectURL(i.url); });
-    state.items = [];
-    renderGallery();
-    resetPdfState(true);
+    state.items = []; renderGallery(); resetPdfState(true);
     showToast('All images cleared.');
   }
 
@@ -666,12 +723,9 @@
       return c ? c.value : fallback;
     };
     const s = {
-      pageSize: get('pageSize', 'a4'),
-      orientation: get('orientation', 'auto'),
-      quality: get('quality', 'high'),
-      compression: get('compression', 'high'),
-      enhance: get('enhance', 'standard'),
-      margin: get('margin', 'small'),
+      pageSize: get('pageSize', 'a4'), orientation: get('orientation', 'auto'),
+      quality: get('quality', 'high'), compression: get('compression', 'high'),
+      enhance: get('enhance', 'standard'), margin: get('margin', 'small'),
       fitMode: get('fitMode', 'fit'),
       filename: sanitizeFilename(el.filename ? el.filename.value : '') || 'document',
       pageNumber: !!(el.pagenumToggle && el.pagenumToggle.checked),
@@ -706,8 +760,7 @@
   function getPdfWorker() {
     if (pdfWorker !== null) return pdfWorker;
     if (typeof Worker === 'undefined' || !window.OffscreenCanvas || !window.createImageBitmap) {
-      pdfWorker = false;
-      return false;
+      pdfWorker = false; return false;
     }
     try {
       pdfWorker = new Worker('pdf-worker.js');
@@ -720,19 +773,14 @@
         if (data.type === 'done') {
           if (data.buffer) data.blob = new Blob([data.buffer], { type: 'application/pdf' });
           resolver.resolve(data);
-        } else {
-          resolver.reject(new Error(data.error || 'Worker error'));
-        }
+        } else { resolver.reject(new Error(data.error || 'Worker error')); }
       });
       pdfWorker.addEventListener('error', function (ev) {
         pdfWorkerPending.forEach(function (r) { r.reject(new Error('Worker error: ' + (ev.message || ''))); });
         pdfWorkerPending.clear();
       });
       return pdfWorker;
-    } catch (e) {
-      pdfWorker = false;
-      return false;
-    }
+    } catch (e) { pdfWorker = false; return false; }
   }
 
   async function buildPdfViaWorker(items, settings, onProgress) {
@@ -758,12 +806,10 @@
   }
 
   const pipelineState = { stage: 0, pct: 0 };
-
   function pipelineShow() {
     if (!el.pipeline) return;
     el.pipeline.hidden = false;
-    pipelineSetPct(0);
-    pipelineSetStage(0);
+    pipelineSetPct(0); pipelineSetStage(0);
     if (el.pipelineTitle) el.pipelineTitle.textContent = 'Composing your document…';
     if (el.pipelineDesc) el.pipelineDesc.textContent = 'Preparing images for processing';
   }
@@ -868,8 +914,7 @@
       return;
     }
     state.busy = true;
-    hidePdfReady();
-    pipelineShow();
+    hidePdfReady(); pipelineShow();
     if (el.createBtn) { el.createBtn.classList.add('is-processing'); el.createBtn.disabled = true; }
     if (el.createLabel) el.createLabel.textContent = 'Generating PDF…';
 
@@ -971,8 +1016,7 @@
     canvas.width = cw; canvas.height = ch;
     const ctx = canvas.getContext('2d', { alpha: false });
     ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, cw, ch);
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
+    ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
     ctx.translate(cw / 2, ch / 2);
     ctx.rotate(rot * Math.PI / 180);
     ctx.drawImage(item.imgEl, -sw / 2, -sh / 2, sw, sh);
@@ -1098,9 +1142,7 @@
     return new Blob(parts, { type: 'application/pdf' });
   }
 
-  /* ══════════════════════════════════════════════════════════
-     INSTALL SYSTEM — direct install from popup
-     ══════════════════════════════════════════════════════════ */
+  /* ═══ INSTALL SYSTEM ═══ */
   function detectPlatform() {
     const ua = (navigator.userAgent || '').toLowerCase();
     installState.isAndroid = /android/.test(ua);
@@ -1109,7 +1151,6 @@
     installState.isIOS = iOSFromUA || iOSFromMac;
     installState.isMobile = installState.isAndroid || installState.isIOS;
     installState.isDesktop = !installState.isMobile;
-
     if (/samsungbrowser/.test(ua)) installState.browser = 'samsung';
     else if (/edgios|edga|edg\//.test(ua)) installState.browser = 'edge';
     else if (/fxios|firefox/.test(ua)) installState.browser = 'firefox';
@@ -1118,7 +1159,6 @@
     else if (/crios|chrome/.test(ua)) installState.browser = 'chrome';
     else if (/safari/.test(ua) && !/chrome|crios|fxios|edg/.test(ua)) installState.browser = 'safari';
     else installState.browser = 'other';
-
     installState.isIOSSafari = installState.isIOS && installState.browser === 'safari';
     installState.isIOSOther = installState.isIOS && !installState.isIOSSafari;
   }
@@ -1137,8 +1177,8 @@
     try {
       if (localStorage.getItem(PP_BLOCK_KEY) === '1') return true;
       if (localStorage.getItem(PP_INSTALLED_KEY) === '1') return true;
-      if (getCookie('pp_install_blocked_v11') === '1') return true;
-      if (getCookie('pp_installed_v2') === '1') return true;
+      if (getCookie('pp_install_blocked_v12') === '1') return true;
+      if (getCookie('pp_installed_v3') === '1') return true;
     } catch (e) {}
     return false;
   }
@@ -1149,8 +1189,8 @@
       localStorage.setItem(PP_INSTALLED_KEY, '1');
       localStorage.setItem(PP_BLOCK_KEY, '1');
     } catch (e) {}
-    setCookie('pp_installed_v2', '1', 3650);
-    setCookie('pp_install_blocked_v11', '1', 3650);
+    setCookie('pp_installed_v3', '1', 3650);
+    setCookie('pp_install_blocked_v12', '1', 3650);
     document.documentElement.classList.add('is-standalone');
     if (el.installChip) el.installChip.style.display = 'none';
     hideInstallTip();
@@ -1160,26 +1200,14 @@
   function initInstall() {
     if (!el.installTip) return;
     detectPlatform();
-
     if (isStandalone()) { markInstalled(); return; }
-
     if (window.__ppDeferredPrompt) {
       installState.deferredPrompt = window.__ppDeferredPrompt;
       installState.hasNative = true;
     }
-
     if (el.installAction) el.installAction.addEventListener('click', onInstallAction);
-
-    if (el.installClose) el.installClose.addEventListener('click', function (e) {
-      e.stopPropagation();
-      onInstallLater();
-    });
-
-    if (el.installNever) el.installNever.addEventListener('click', function (e) {
-      e.stopPropagation();
-      onInstallNever();
-    });
-
+    if (el.installClose) el.installClose.addEventListener('click', function (e) { e.stopPropagation(); onInstallLater(); });
+    if (el.installNever) el.installNever.addEventListener('click', function (e) { e.stopPropagation(); onInstallNever(); });
     if (el.installChip) {
       el.installChip.style.display = '';
       el.installChip.addEventListener('click', function () {
@@ -1191,7 +1219,6 @@
         showInstallTip();
       });
     }
-
     if (el.installModalClose) el.installModalClose.addEventListener('click', hideInstallModal);
     if (el.installModal) {
       el.installModal.addEventListener('click', function (e) {
@@ -1202,22 +1229,15 @@
       $$('.install-tab', el.installTabs).forEach(function (tab) {
         tab.addEventListener('click', function () {
           const target = tab.getAttribute('data-tab');
-          $$('.install-tab', el.installTabs).forEach(function (t) {
-            t.classList.toggle('is-active', t === tab);
-          });
-          $$('.install-panel', el.installModal).forEach(function (p) {
-            p.classList.toggle('is-active', p.getAttribute('data-panel') === target);
-          });
+          $$('.install-tab', el.installTabs).forEach(function (t) { t.classList.toggle('is-active', t === tab); });
+          $$('.install-panel', el.installModal).forEach(function (p) { p.classList.toggle('is-active', p.getAttribute('data-panel') === target); });
         });
       });
     }
-
     if (!hasBeenBlocked()) {
       clearTimeout(installState.autoShowTimer);
       installState.autoShowTimer = setTimeout(function () {
-        if (!installState.isInstalled && !hasBeenBlocked()) {
-          showInstallTip();
-        }
+        if (!installState.isInstalled && !hasBeenBlocked()) showInstallTip();
       }, 1800);
     }
   }
@@ -1234,24 +1254,20 @@
       if (isIOSOther) el.installTitle.textContent = 'Open in Safari';
       else el.installTitle.textContent = 'Install PixelPress';
     }
-
     if (el.installDesc) {
       if (isIOSOther) el.installDesc.textContent = 'iOS allows installation only from Safari';
       else if (isIOSSafari) el.installDesc.textContent = 'Add to Home Screen — works offline, no account needed';
       else if (hasNative) el.installDesc.textContent = 'Tap Install to add the app — works offline';
       else if (b === 'samsung') el.installDesc.textContent = 'Add to Home screen via Samsung Internet menu';
       else if (b === 'firefox') el.installDesc.textContent = 'Install via Firefox menu — works offline';
-      else if (b === 'opera') el.installDesc.textContent = 'Add to Home screen via Opera menu';
       else el.installDesc.textContent = 'Install the app — works offline, no account needed';
     }
-
     if (el.installActionLabel) {
       if (hasNative) el.installActionLabel.textContent = 'Install Now';
       else if (isIOSOther) el.installActionLabel.textContent = 'Open Safari';
       else if (isIOSSafari) el.installActionLabel.textContent = 'Show me how';
       else el.installActionLabel.textContent = 'Install';
     }
-
     if (el.installIcon) {
       if (isIOS) el.installIcon.innerHTML = '<svg class="ic"><use href="#i-apple"/></svg>';
       else if (installState.isAndroid) el.installIcon.innerHTML = '<svg class="ic"><use href="#i-android"/></svg>';
@@ -1286,13 +1302,13 @@
   function onInstallLater() {
     const until = Date.now() + 48 * 60 * 60 * 1000;
     try { localStorage.setItem(PP_LATER_KEY, String(until)); } catch (e) {}
-    setCookie('pp_install_later_v11', String(until), 2);
+    setCookie('pp_install_later_v12', String(until), 2);
     hideInstallTip();
   }
 
   function onInstallNever() {
     try { localStorage.setItem(PP_BLOCK_KEY, '1'); } catch (e) {}
-    setCookie('pp_install_blocked_v11', '1', 365);
+    setCookie('pp_install_blocked_v12', '1', 365);
     hideInstallTip();
     if (el.installChip) el.installChip.style.display = 'none';
     showToast("Got it — we won't ask again.");
@@ -1303,8 +1319,6 @@
       installState.deferredPrompt = window.__ppDeferredPrompt;
       installState.hasNative = true;
     }
-
-    /* 1. DIRECT INSTALL — native prompt ready */
     if (installState.deferredPrompt) {
       try {
         installState.deferredPrompt.prompt();
@@ -1312,9 +1326,7 @@
         if (choice && choice.outcome === 'accepted') {
           markInstalled();
           showToast('Installing PixelPress app…');
-        } else {
-          onInstallLater();
-        }
+        } else { onInstallLater(); }
         installState.deferredPrompt = null;
         installState.hasNative = false;
         window.__ppDeferredPrompt = null;
@@ -1324,8 +1336,6 @@
       }
       return;
     }
-
-    /* 2. Android/Desktop — wait for prompt up to 8s */
     const canUseNative = installState.isAndroid || installState.isDesktop;
     if (canUseNative && installState.browser !== 'firefox') {
       const btn = el.installAction;
@@ -1336,12 +1346,8 @@
 
       const gotPrompt = await new Promise(function (resolve) {
         const timer = setTimeout(function () { resolve(false); }, 8000);
-        window.__ppInstallWaiters.push(function () {
-          clearTimeout(timer);
-          resolve(true);
-        });
+        window.__ppInstallWaiters.push(function () { clearTimeout(timer); resolve(true); });
       });
-
       if (label) label.textContent = originalLabel;
       if (btn) btn.disabled = false;
 
@@ -1352,44 +1358,32 @@
           if (choice && choice.outcome === 'accepted') {
             markInstalled();
             showToast('Installing PixelPress app…');
-          } else {
-            onInstallLater();
-          }
+          } else { onInstallLater(); }
           window.__ppDeferredPrompt = null;
           installState.deferredPrompt = null;
-        } catch (err) {
-          showInstallModal();
-        }
+        } catch (err) { showInstallModal(); }
         return;
       }
-
       hideInstallTip();
       showInstallModal();
       showToast('Please follow the on-screen steps to install');
       return;
     }
-
-    /* 3. iOS other browser */
     if (installState.isIOSOther) {
       hideInstallTip();
       showInstallModal();
       return;
     }
-
-    /* 4. iOS Safari / Firefox */
     hideInstallTip();
     showInstallModal();
   }
 
   function showInstallModal() {
     if (!el.installModal) return;
-
     let tab = 'android';
     if (installState.isIOS) tab = 'ios';
     else if (installState.browser === 'samsung') tab = 'samsung';
     else if (installState.browser === 'firefox') tab = 'firefox';
-    else if (installState.browser === 'opera') tab = 'opera';
-    else if (installState.browser === 'uc') tab = 'other';
     else if (installState.browser === 'chrome' || installState.browser === 'edge') tab = 'android';
     else tab = 'other';
 
@@ -1405,22 +1399,15 @@
       else if (installState.isAndroid) el.installModalSubtitle.textContent = 'Follow these steps on your Android device';
       else el.installModalSubtitle.textContent = 'Choose your browser below';
     }
-
     if (el.installModalIcon) {
       if (installState.isIOS) el.installModalIcon.innerHTML = '<svg class="ic"><use href="#i-apple"/></svg>';
       else if (installState.isAndroid) el.installModalIcon.innerHTML = '<svg class="ic"><use href="#i-android"/></svg>';
       else el.installModalIcon.innerHTML = '<svg class="ic"><use href="#i-leaf"/></svg>';
     }
-
     if (el.installTabs) {
-      $$('.install-tab', el.installTabs).forEach(function (t) {
-        t.classList.toggle('is-active', t.getAttribute('data-tab') === tab);
-      });
-      $$('.install-panel', el.installModal).forEach(function (p) {
-        p.classList.toggle('is-active', p.getAttribute('data-panel') === tab);
-      });
+      $$('.install-tab', el.installTabs).forEach(function (t) { t.classList.toggle('is-active', t.getAttribute('data-tab') === tab); });
+      $$('.install-panel', el.installModal).forEach(function (p) { p.classList.toggle('is-active', p.getAttribute('data-panel') === tab); });
     }
-
     el.installModal.hidden = false;
     document.body.classList.add('is-modal-open');
   }
@@ -1435,9 +1422,7 @@
     }, 200);
   }
 
-  /* ══════════════════════════════════════════════════════════
-     IMAGE MODAL
-     ══════════════════════════════════════════════════════════ */
+  /* ═══ IMAGE MODAL ═══ */
   let modalIndex = 0;
   function openModal(idx) {
     if (!el.imgModal || !state.items.length) return;
@@ -1492,6 +1477,17 @@
     });
   }
 
+  /* ═══ COUNT BUMP ═══ */
+  function initCountBump() {
+    if (!el.imgCount) return;
+    const observer = new MutationObserver(function () {
+      el.imgCount.classList.remove('bump');
+      void el.imgCount.offsetWidth;
+      el.imgCount.classList.add('bump');
+    });
+    observer.observe(el.imgCount, { childList: true, characterData: true, subtree: true });
+  }
+
   const REQUIRED = [['themeBtn', '#theme-toggle'], ['dropzone', '#dropzone'], ['fileInput', '#file-input'], ['createBtn', '#create-pdf']];
   function allRequiredPresent() {
     return REQUIRED.every(function (pair) {
@@ -1502,11 +1498,11 @@
 
   function startApp() {
     document.documentElement.classList.add('is-ready');
-    document.documentElement.classList.remove('is-loading');
     if (el.year) el.year.textContent = String(new Date().getFullYear());
 
     safe('theme', initTheme);
     safe('nav', initNav);
+    safe('cmdPalette', initCommandPalette);
     safe('headerScroll', initHeaderScroll);
     safe('scrollProgress', initScrollProgress);
     safe('reveal', initReveal);
@@ -1521,6 +1517,7 @@
     safe('applySaved', applySavedSettings);
     safe('howTimeline', initHowTimeline);
     safe('faqFilter', initFaqFilter);
+    safe('countBump', initCountBump);
 
     if (el.createBtn) {
       el.createBtn.addEventListener('click', convert);
