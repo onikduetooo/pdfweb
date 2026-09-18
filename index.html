@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<title>Free Image To PDF Converter — Convert JPG, PNG, WEBP to PDF | PixelPress</title>
+<meta name="description" content="Free online image to PDF converter. Convert JPG, PNG, WEBP, GIF images into high-quality PDF. 100% private — runs entirely in your browser." />
+<meta name="keywords" content="image to pdf converter, jpg to pdf, png to pdf, webp to pdf, free pdf converter, photo to pdf" />
+<meta name="robots" content="index, follow, max-image-preview:large" />
+<meta name="author" content="PixelPress" />
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+<link rel="canonical" href="https://pixelpress-pdf.netlify.app/" />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="PixelPress" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:title" content="Free Image to PDF Converter — PixelPress" />
+<meta property="og:description" content="Convert JPG, PNG, WEBP, GIF, BMP images into publication-grade PDF in seconds. 100% private — runs entirely in your browser." />
+<meta property="og:url" content="https://pixelpress-pdf.netlify.app/" />
+<meta property="og:image" content="https://pixelpress-pdf.netlify.app/icons/icon-512.png" />
+<meta property="og:image:width" content="512" />
+<meta property="og:image:height" content="512" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Free Image to PDF Converter — PixelPress" />
+<meta name="twitter:description" content="Convert JPG, PNG, WEBP, GIF, BMP images into publication-grade PDF in seconds. 100% private." />
+<meta name="twitter:image" content="https://pixelpress-pdf.netlify.app/icons/icon-512.png" />
+
+<meta name="application-name" content="PixelPress" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="PixelPress" />
+<meta name="apple-touch-fullscreen" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="msapplication-TileColor" content="#34c759" />
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&display=optional" media="print" onload="this.media='all';this.onload=null" />
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&display=optional" /></noscript>
+
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png" />
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
+<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-192.png" />
+<link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png" />
+<link rel="apple-touch-icon" sizes="512x512" href="icons/icon-512.png" />
+<link rel="manifest" href="manifest.webmanifest" />
+
+<link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" href="icons/splash-640x1136.png" />
+<link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="icons/splash-750x1334.png" />
+<link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" href="icons/splash-1242x2688.png" />
+<link rel="apple-touch-startup-image" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" href="icons/splash-1170x2532.png" />
+<link rel="apple-touch-startup-image" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" href="icons/splash-1284x2778.png" />
+
+<link rel="stylesheet" href="style.css" />
+<noscript><style>[data-reveal]{opacity:1!important;transform:none!important}html.is-loading body{opacity:1!important}</style></noscript>
+
+<script>
+(function(){
+  try{var s=localStorage.getItem('pp-theme');document.documentElement.setAttribute('data-theme',s==='dark'?'dark':'light');}
+  catch(e){document.documentElement.setAttribute('data-theme','light');}
+
+  try{
+    if(window.matchMedia('(display-mode: standalone)').matches||
+       window.matchMedia('(display-mode: window-controls-overlay)').matches||
+       window.navigator.standalone===true){
+      document.documentElement.classList.add('is-standalone');
+    }
+  }catch(e){}
+
+  /* ── Register SW immediately ── */
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+    navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
+      .then(function(){ console.info('[PixelPress] SW ready'); })
+      .catch(function(e){ console.warn('[PixelPress] SW failed:', e.message); });
+  }
+
+  /* ── Dynamic manifest with generated icons ── */
+  function drawIcon(size){
+    var c=document.createElement('canvas');c.width=size;c.height=size;
+    var ctx=c.getContext('2d');
+    var r=size*0.22;
+    var g=ctx.createLinearGradient(0,0,size,size);
+    g.addColorStop(0,'#34c759');g.addColorStop(0.5,'#2aa84a');g.addColorStop(1,'#0a8a3d');
+    ctx.fillStyle=g;
+    ctx.beginPath();
+    ctx.moveTo(r,0);ctx.lineTo(size-r,0);ctx.quadraticCurveTo(size,0,size,r);
+    ctx.lineTo(size,size-r);ctx.quadraticCurveTo(size,size,size-r,size);
+    ctx.lineTo(r,size);ctx.quadraticCurveTo(0,size,0,size-r);
+    ctx.lineTo(0,r);ctx.quadraticCurveTo(0,0,r,0);ctx.closePath();ctx.fill();
+    var s=size*0.55,cx=size/2,cy=size/2;
+    ctx.fillStyle='rgba(255,255,255,0.95)';
+    ctx.beginPath();
+    ctx.moveTo(cx-s*0.35,cy+s*0.35);
+    ctx.quadraticCurveTo(cx-s*0.55,cy-s*0.15,cx+s*0.05,cy-s*0.55);
+    ctx.quadraticCurveTo(cx+s*0.55,cy-s*0.1,cx+s*0.35,cy+s*0.4);
+    ctx.quadraticCurveTo(cx,cy+s*0.55,cx-s*0.35,cy+s*0.35);
+    ctx.closePath();ctx.fill();
+    return c.toDataURL('image/png');
+  }
+  try{
+    var icon192=drawIcon(192),icon512=drawIcon(512);
+    var manifest={
+      name:"PixelPress — Image to PDF Converter",
+      short_name:"PixelPress",
+      description:"Convert JPG, PNG, WEBP, GIF, BMP images into high-quality PDF. 100% private.",
+      start_url:"/",scope:"/",id:"/",
+      display:"standalone",
+      display_override:["standalone","minimal-ui"],
+      orientation:"any",
+      theme_color:"#34c759",background_color:"#ffffff",
+      lang:"en",dir:"ltr",
+      categories:["productivity","utilities","photo"],
+      prefer_related_applications:false,
+      icons:[
+        {src:icon192,sizes:"192x192",type:"image/png",purpose:"any"},
+        {src:icon512,sizes:"512x512",type:"image/png",purpose:"any"},
+        {src:icon512,sizes:"512x512",type:"image/png",purpose:"maskable"}
+      ],
+      shortcuts:[{name:"Open Converter",short_name:"Convert",url:"/#converter"}]
+    };
+    var mBlob=new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'});
+    var mUrl=URL.createObjectURL(mBlob);
+    var mLink=document.querySelector('link[rel="manifest"]');
+    if(mLink){mLink.href=mUrl;}
+  }catch(e){console.warn('[PixelPress] manifest:',e);}
+
+  /* ── Capture beforeinstallprompt ── */
+  window.__ppDeferredPrompt=null;
+  window.__ppInstallWaiters=[];
+  window.addEventListener('beforeinstallprompt',function(e){
+    e.preventDefault();
+    window.__ppDeferredPrompt=e;
+    console.info('[PixelPress] Install prompt captured ✅');
+    window.__ppInstallWaiters.splice(0).forEach(function(cb){try{cb(e);}catch(err){}});
+  });
+  window.addEventListener('appinstalled',function(){
+    window.__ppDeferredPrompt=null;
+    console.info('[PixelPress] App installed ✅');
+  });
+})();
+</script>
+</head>
+<body>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
+  <symbol id="brand-mark" viewBox="0 0 44 44">
+    <defs>
+      <linearGradient id="logoBg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#34c759"/>
+        <stop offset="50%" stop-color="#2aa84a"/>
+        <stop offset="100%" stop-color="#0a8a3d"/>
+      </linearGradient>
+      <linearGradient id="logoLeaf" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#ffffff"/>
+        <stop offset="100%" stop-color="#d1fae5"/>
+      </linearGradient>
+    </defs>
+    <rect width="44" height="44" rx="11" fill="url(#logoBg)"/>
+    <path d="M22 9c-7.2 3.8-13 10.2-13 17.3 0 4.1 3.1 7.2 7.2 7.2 8.3 0 15.6-7.9 17.6-19.6A38 38 0 0 1 22 9Z" fill="url(#logoLeaf)"/>
+    <path d="M22 9c1.6 4.4 2.2 9.5 1.6 14.5-.6 5.4-2.8 9.6-8.1 11.5" fill="none" stroke="#0a8a3d" stroke-width="1.3" stroke-linecap="round" opacity=".55"/>
+  </symbol>
+
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 19-7-7 7-7"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></symbol>
+  <symbol id="i-rotate" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1.06 6.68 2.91L21 8"/><path d="M21 3v5h-5"/></symbol>
+  <symbol id="i-grip" viewBox="0 0 24 24"><circle cx="9" cy="6" r="1" fill="currentColor"/><circle cx="9" cy="12" r="1" fill="currentColor"/><circle cx="9" cy="18" r="1" fill="currentColor"/><circle cx="15" cy="6" r="1" fill="currentColor"/><circle cx="15" cy="12" r="1" fill="currentColor"/><circle cx="15" cy="18" r="1" fill="currentColor"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></symbol>
+  <symbol id="i-images" viewBox="0 0 24 24"><path d="M18 22H4a2 2 0 0 1-2-2V6"/><path d="m22 13-1.296-1.296a2.41 2.41 0 0 0-3.408 0L11 18"/><circle cx="12" cy="8" r="2"/><rect width="16" height="16" x="6" y="2" rx="2"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/><path d="M5 3v4M19 17v4M3 5h4M17 19h4"/></symbol>
+  <symbol id="i-file-pdf" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M9 13h1.5a1.5 1.5 0 0 1 0 3H9v-3Zm0 3v3m4-6v6m2-6h2m0 0v1.5m0-1.5h2"/></symbol>
+  <symbol id="i-rocket" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91 0z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
+  <symbol id="i-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
+  <symbol id="i-smartphone" viewBox="0 0 24 24"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01" fill="currentColor"/></symbol>
+  <symbol id="i-tablet" viewBox="0 0 24 24"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M12 18h.01" fill="currentColor"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></symbol>
+  <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></symbol>
+  <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M12 20h.01M5 12.859a10 10 0 0 1 14 0M8.5 16.429a5 5 0 0 1 7 0M2 8.82a15 15 0 0 1 20 0"/></symbol>
+  <symbol id="i-server" viewBox="0 0 24 24"><rect width="20" height="8" x="2" y="2" rx="2" ry="2"/><rect width="20" height="8" x="2" y="14" rx="2" ry="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></symbol>
+  <symbol id="i-user-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.563.563 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.563.563 0 0 0-.182-.557l-4.204-3.602a.563.563 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-apple" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></symbol>
+  <symbol id="i-android" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4483-.9993.9993-.9993c.5511 0 .9993.4483.9993.9993.0002.5511-.4482.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4483.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5676.416.416 0 00-.5676.1521l-2.0223 3.503C15.5902 8.2439 13.8533 7.8508 12 7.8508s-3.5902.3931-5.1367 1.0989L4.841 5.4467a.416.416 0 00-.5677-.1521.4157.4157 0 00-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3435-4.1021-2.6892-7.5743-6.1185-9.4396"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></symbol>
+  <symbol id="i-infinity" viewBox="0 0 24 24"><path d="M12 12c-2-2.67-4-4-6-4a4 4 0 1 0 0 8c2 0 4-1.33 6-4Zm0 0c2 2.67 4 4 6 4a4 4 0 0 0 0-8c-2 0-4 1.33-6 4Z"/></symbol>
+  <symbol id="i-dollar" viewBox="0 0 24 24"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></symbol>
+</svg>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+<div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
+<div class="ambient" aria-hidden="true"></div>
+
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <a class="logo" href="#top" aria-label="PixelPress home">
+      <span class="logo-mark" aria-hidden="true">
+        <svg class="logo-mark__svg" viewBox="0 0 44 44"><use href="#brand-mark"/></svg>
+      </span>
+      <span class="logo-text">Pixel<em>Press</em></span>
+    </a>
+
+    <nav class="seg-nav" id="primary-nav" aria-label="Main navigation">
+      <a href="#top" class="seg-nav__link is-active">Home</a>
+      <a href="#converter" class="seg-nav__link">Converter</a>
+      <a href="#features" class="seg-nav__link">Features</a>
+      <a href="#how-it-works" class="seg-nav__link">How</a>
+      <a href="#faq" class="seg-nav__link">FAQ</a>
+    </nav>
+
+    <div class="header-actions">
+      <button type="button" class="action-btn" id="cmd-trigger" aria-label="Open command menu">
+        <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg>
+        <span class="action-btn__label">Search</span>
+        <kbd class="action-btn__kbd">⌘K</kbd>
+      </button>
+
+      <button type="button" class="install-chip" id="install-chip" aria-label="Install PixelPress app">
+        <svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg>
+        <span>Get App</span>
+      </button>
+
+      <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch theme" aria-pressed="false" role="switch">
+        <span class="toggle-track" aria-hidden="true">
+          <svg class="ic ico-bg ico-bg--sun"><use href="#i-sun"/></svg>
+          <svg class="ic ico-bg ico-bg--moon"><use href="#i-moon"/></svg>
+          <span class="toggle-thumb">
+            <span class="thumb-inner">
+              <svg class="ic thumb-sun"><use href="#i-sun"/></svg>
+              <svg class="ic thumb-moon"><use href="#i-moon"/></svg>
+            </span>
+          </span>
+        </span>
+      </button>
+
+      <a href="#converter" class="btn btn-primary btn-sm header-cta">
+        <span>Start Converting</span>
+        <svg class="ic" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+      </a>
+
+      <button type="button" class="menu-btn" id="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="primary-nav">
+        <span class="menu-bars" aria-hidden="true">
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<dialog class="cmd-palette" id="cmd-palette" aria-label="Command menu">
+  <div class="cmd-palette__inner">
+    <div class="cmd-palette__search">
+      <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg>
+      <input type="text" id="cmd-input" class="cmd-palette__input" placeholder="Jump to section or action…" autocomplete="off" spellcheck="false" />
+      <kbd class="cmd-palette__esc">ESC</kbd>
+    </div>
+    <ul class="cmd-palette__list" id="cmd-list" role="listbox"></ul>
+    <p class="cmd-palette__foot">
+      <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+      <span><kbd>↵</kbd> select</span>
+    </p>
+  </div>
+</dialog>
+
+<main id="main">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container">
+      <div class="hero-copy">
+        <p class="pill" data-reveal><span class="pill-dot" aria-hidden="true"></span>Enterprise-grade privacy · No uploads required</p>
+        <h1 id="hero-title" data-reveal data-reveal-delay="60">Convert images into <span class="grad-text">publication-grade PDF</span> in seconds</h1>
+        <p class="hero-sub" data-reveal data-reveal-delay="120">The professional image-to-PDF converter built for people who care about quality and privacy. Every page is composed inside your browser.</p>
+        <div class="hero-cta" data-reveal data-reveal-delay="180">
+          <button type="button" class="btn btn-primary btn-lg" id="hero-upload">
+            <svg class="ic" aria-hidden="true"><use href="#i-upload"/></svg> Upload Images
+          </button>
+          <a class="btn btn-ghost btn-lg" href="#how-it-works">
+            <svg class="ic" aria-hidden="true"><use href="#i-play"/></svg> See how it works
+          </a>
+        </div>
+        <ul class="badges" data-reveal data-reveal-delay="240">
+          <li><i class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></i> Bank-grade privacy</li>
+          <li><i class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></i> Ultra HD output</li>
+          <li><i class="badge-ic"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></i> Permanently free</li>
+        </ul>
+        <div class="hero-proof" data-reveal data-reveal-delay="300">
+          <div class="avatars" aria-hidden="true"><span>J</span><span>M</span><span>A</span><span>K</span><span>+</span></div>
+          <div class="proof-text">
+            <strong>2.4M+ documents delivered</strong>
+            <em><svg class="ic" aria-hidden="true"><use href="#i-star"/></svg> 4.9 / 5 from 1,284 users</em>
+          </div>
+        </div>
+      </div>
+
+      <section class="converter card" id="converter" aria-labelledby="converter-title" data-reveal data-reveal-delay="120" data-tilt>
+        <header class="converter-head">
+          <div><h2 id="converter-title">Image to PDF Converter</h2><p>Drop images, refine the layout, export a polished document.</p></div>
+          <span class="live-badge"><i></i> Live</span>
+        </header>
+        <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Upload images">
+          <span class="dz-icon" aria-hidden="true"><svg class="ic"><use href="#i-images"/></svg></span>
+          <p class="dz-title">Drop your images here</p>
+          <p class="dz-sub">JPG · PNG · WEBP · GIF · BMP — up to 25 MB each</p>
+          <span class="btn btn-primary dz-btn"><svg class="ic" aria-hidden="true"><use href="#i-folder"/></svg> Choose Images</span>
+        </div>
+        <input type="file" id="file-input" accept="image/jpeg,image/jpg,image/png,image/webp,image/gif,image/bmp" multiple hidden />
+        <p class="privacy-note"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg> Your files never leave your device. Every conversion runs locally.</p>
+
+        <div class="workspace" id="workspace" hidden>
+          <div class="ws-head">
+            <h3>Your images <span class="count" id="img-count">0</span></h3>
+            <div class="ws-head-actions">
+              <button type="button" class="btn btn-ghost btn-xs" id="add-more"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg> Add more</button>
+              <button type="button" class="btn btn-ghost btn-xs danger" id="clear-all"><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg> Clear all</button>
+            </div>
+          </div>
+          <ul class="gallery" id="gallery" aria-label="Selected images"></ul>
+
+          <div class="settings" id="settings">
+            <h3 class="settings-title">PDF composition</h3>
+            <fieldset class="setting"><legend>Page size</legend><div class="segmented">
+              <label><input type="radio" name="pageSize" value="a4" checked /><span>A4</span></label>
+              <label><input type="radio" name="pageSize" value="letter" /><span>Letter</span></label>
+              <label><input type="radio" name="pageSize" value="legal" /><span>Legal</span></label>
+              <label><input type="radio" name="pageSize" value="original" /><span>Original</span></label>
+            </div></fieldset>
+            <fieldset class="setting"><legend>Orientation</legend><div class="segmented">
+              <label><input type="radio" name="orientation" value="auto" checked /><span>Auto</span></label>
+              <label><input type="radio" name="orientation" value="portrait" /><span>Portrait</span></label>
+              <label><input type="radio" name="orientation" value="landscape" /><span>Landscape</span></label>
+            </div></fieldset>
+            <fieldset class="setting"><legend>Image quality</legend><div class="segmented">
+              <label><input type="radio" name="quality" value="low" /><span>Low</span></label>
+              <label><input type="radio" name="quality" value="medium" /><span>Medium</span></label>
+              <label><input type="radio" name="quality" value="high" checked /><span>High</span></label>
+              <label><input type="radio" name="quality" value="ultra" /><span>Ultra</span></label>
+            </div></fieldset>
+            <fieldset class="setting"><legend>Compression</legend><div class="segmented">
+              <label><input type="radio" name="compression" value="low" /><span>Small</span></label>
+              <label><input type="radio" name="compression" value="medium" /><span>Balanced</span></label>
+              <label><input type="radio" name="compression" value="high" checked /><span>Quality</span></label>
+            </div></fieldset>
+            <fieldset class="setting"><legend>Auto enhancement</legend><div class="segmented">
+              <label><input type="radio" name="enhance" value="none" /><span>Off</span></label>
+              <label><input type="radio" name="enhance" value="soft" /><span>Soft</span></label>
+              <label><input type="radio" name="enhance" value="standard" checked /><span>Standard</span></label>
+              <label><input type="radio" name="enhance" value="strong" /><span>Strong</span></label>
+            </div></fieldset>
+            <fieldset class="setting"><legend>Margins</legend><div class="segmented">
+              <label><input type="radio" name="margin" value="none" /><span>None</span></label>
+              <label><input type="radio" name="margin" value="small" checked /><span>Small</span></label>
+              <label><input type="radio" name="margin" value="medium" /><span>Medium</span></label>
+              <label><input type="radio" name="margin" value="large" /><span>Large</span></label>
+            </div></fieldset>
+          </div>
+
+          <details class="advanced" id="advanced">
+            <summary>
+              <span class="adv-ico" aria-hidden="true"><svg class="ic"><use href="#i-sliders"/></svg></span>
+              <span class="adv-text"><strong>Advanced options</strong><em>Filename, fit mode, page numbers, watermark, metadata</em></span>
+              <span class="adv-chevron" aria-hidden="true"><svg class="ic"><use href="#i-chevron-down"/></svg></span>
+            </summary>
+            <div class="adv-body">
+              <label class="field"><span class="field-label">File name</span><input type="text" id="opt-filename" class="input" placeholder="document" maxlength="60" autocomplete="off" spellcheck="false" /></label>
+              <fieldset class="setting"><legend>Image fit</legend><div class="segmented">
+                <label><input type="radio" name="fitMode" value="fit" checked /><span>Fit</span></label>
+                <label><input type="radio" name="fitMode" value="fill" /><span>Fill</span></label>
+                <label><input type="radio" name="fitMode" value="stretch" /><span>Stretch</span></label>
+              </div></fieldset>
+              <div class="adv-block">
+                <label class="switch-row"><input type="checkbox" id="opt-pagenum" /><span class="switch" aria-hidden="true"><span class="switch-thumb"></span></span><span class="switch-text">Add page numbers</span></label>
+                <div class="adv-sub" id="pagenum-opts" hidden>
+                  <select class="select" id="opt-pagenum-pos"><option value="bottom-center">Bottom center</option><option value="bottom-right">Bottom right</option><option value="bottom-left">Bottom left</option><option value="top-center">Top center</option><option value="top-right">Top right</option><option value="top-left">Top left</option></select>
+                  <select class="select" id="opt-pagenum-format"><option value="n">1, 2, 3</option><option value="n-of-total">1 / N</option></select>
+                </div>
+              </div>
+              <div class="adv-block">
+                <label class="switch-row"><input type="checkbox" id="opt-watermark" /><span class="switch" aria-hidden="true"><span class="switch-thumb"></span></span><span class="switch-text">Text watermark</span></label>
+                <div class="adv-sub adv-sub--col" id="watermark-opts" hidden>
+                  <input type="text" id="opt-watermark-text" class="input input-sm" placeholder="CONFIDENTIAL" maxlength="40" autocomplete="off" />
+                  <label class="range-row"><span class="range-label">Opacity</span><input type="range" id="opt-watermark-opacity" min="5" max="60" value="18" /><output id="opt-watermark-opval" class="range-val">18%</output></label>
+                </div>
+              </div>
+              <div class="adv-block">
+                <label class="switch-row"><input type="checkbox" id="opt-meta" /><span class="switch" aria-hidden="true"><span class="switch-thumb"></span></span><span class="switch-text">Custom PDF metadata</span></label>
+                <div class="adv-sub adv-sub--col" id="meta-opts" hidden>
+                  <input type="text" id="opt-meta-title" class="input input-sm" placeholder="Document title" maxlength="80" autocomplete="off" />
+                  <input type="text" id="opt-meta-author" class="input input-sm" placeholder="Author name" maxlength="60" autocomplete="off" />
+                </div>
+              </div>
+              <div class="adv-block"><label class="switch-row"><input type="checkbox" id="opt-pdfa" /><span class="switch" aria-hidden="true"><span class="switch-thumb"></span></span><span class="switch-text">PDF/A archival mode</span></label></div>
+            </div>
+          </details>
+
+          <div class="pipeline" id="pipeline" hidden>
+            <div class="pipeline-header">
+              <div class="pipeline-ring">
+                <svg viewBox="0 0 100 100" class="pipeline-svg" aria-hidden="true">
+                  <circle class="pipeline-track" cx="50" cy="50" r="44"></circle>
+                  <circle class="pipeline-fill" id="pipeline-fill" cx="50" cy="50" r="44"></circle>
+                </svg>
+                <span class="pipeline-pct" id="pipeline-pct">0%</span>
+              </div>
+              <div class="pipeline-info"><h4 id="pipeline-title">Composing your document…</h4><p id="pipeline-desc">Preparing images for processing</p></div>
+            </div>
+            <ol class="pipeline-stages" id="pipeline-stages">
+              <li class="pipeline-stage" data-stage="1"><span class="stage-ico"><svg class="ic"><use href="#i-image"/></svg></span><span class="stage-text">Reading images</span><span class="stage-check"><svg class="ic"><use href="#i-check"/></svg></span></li>
+              <li class="pipeline-stage" data-stage="2"><span class="stage-ico"><svg class="ic"><use href="#i-sparkles"/></svg></span><span class="stage-text">Enhancing quality</span><span class="stage-check"><svg class="ic"><use href="#i-check"/></svg></span></li>
+              <li class="pipeline-stage" data-stage="3"><span class="stage-ico"><svg class="ic"><use href="#i-file-pdf"/></svg></span><span class="stage-text">Composing pages</span><span class="stage-check"><svg class="ic"><use href="#i-check"/></svg></span></li>
+              <li class="pipeline-stage" data-stage="4"><span class="stage-ico"><svg class="ic"><use href="#i-rocket"/></svg></span><span class="stage-text">Finalising document</span><span class="stage-check"><svg class="ic"><use href="#i-check"/></svg></span></li>
+            </ol>
+          </div>
+
+          <button type="button" class="btn btn-primary btn-block btn-lg" id="create-pdf">
+            <svg class="ic" aria-hidden="true"><use href="#i-file-pdf"/></svg>
+            <span id="create-btn-label">Generate PDF</span>
+            <kbd class="btn-kbd">Ctrl↵</kbd>
+          </button>
+
+          <div class="pdf-ready" id="pdf-ready" hidden>
+            <div class="pdf-ready-head">
+              <span class="pdf-ready-ico" aria-hidden="true"><svg class="ic"><use href="#i-check-circle"/></svg></span>
+              <div><strong>Your document is ready</strong><em id="pdf-ready-meta">1 page · 245 KB</em></div>
+            </div>
+            <div class="pdf-ready-actions">
+              <button type="button" class="btn btn-primary btn-block btn-lg" id="download-pdf"><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg> Download PDF</button>
+              <button type="button" class="btn btn-ghost btn-block btn-sm" id="share-pdf"><svg class="ic" aria-hidden="true"><use href="#i-share"/></svg> Share PDF</button>
+              <button type="button" class="btn btn-ghost btn-block btn-sm" id="preview-pdf"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg> Preview in new tab</button>
+            </div>
+            <button type="button" class="btn btn-ghost btn-block btn-xs pdf-new-btn" id="new-pdf"><svg class="ic" aria-hidden="true"><use href="#i-rotate"/></svg> Start another document</button>
+          </div>
+          <p class="ws-footnote"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg> Zero uploads. Every operation is local.</p>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <section class="section stats-section" aria-label="Stats"><div class="container">
+    <ul class="stats" data-reveal>
+      <li><strong class="counter" data-target="2.4" data-suffix="M+" data-decimals="1">0</strong><span>Documents delivered</span></li>
+      <li><strong class="counter" data-target="180" data-suffix="+">0</strong><span>Countries served</span></li>
+      <li><strong class="counter" data-target="4.9" data-suffix="/5" data-decimals="1">0</strong><span>User rating</span></li>
+      <li><strong class="counter" data-target="0" data-suffix=" files">0</strong><span>Files ever uploaded</span></li>
+    </ul>
+  </div></section>
+
+  <section class="section section--alt" id="features" aria-labelledby="features-title">
+    <div class="container">
+      <header class="section-head" data-reveal>
+        <p class="eyebrow">Craft & precision</p>
+        <h2 id="features-title">Engineered for documents that matter</h2>
+        <p class="section-sub">Every detail is tuned so your finished PDF looks as professional as the original.</p>
+      </header>
+      <ul class="bento">
+        <li class="feature-card bento-lg" data-reveal>
+          <span class="feature-ico"><svg class="ic"><use href="#i-sparkles"/></svg></span>
+          <h3>Publication-grade output</h3>
+          <p>Images embed at up to 4500 px on the long edge with perceptual JPEG tuning.</p>
+        </li>
+        <li class="feature-card" data-reveal data-reveal-delay="60"><span class="feature-ico"><svg class="ic"><use href="#i-shield"/></svg></span><h3>Confidential by design</h3><p>No servers. No logs. No exceptions.</p></li>
+        <li class="feature-card" data-reveal data-reveal-delay="120"><span class="feature-ico"><svg class="ic"><use href="#i-bolt"/></svg></span><h3>Instant rendering</h3><p>Multi-page documents composed in seconds.</p></li>
+        <li class="feature-card" data-reveal data-reveal-delay="180"><span class="feature-ico"><svg class="ic"><use href="#i-smartphone"/></svg></span><h3>Install as mobile app</h3><p>Add to home screen and use offline.</p></li>
+        <li class="feature-card" data-reveal data-reveal-delay="240"><span class="feature-ico"><svg class="ic"><use href="#i-tablet"/></svg></span><h3>Perfectly responsive</h3><p>Pixel-perfect on every screen.</p></li>
+        <li class="feature-card bento-wide" data-reveal data-reveal-delay="300"><span class="feature-ico"><svg class="ic"><use href="#i-gift"/></svg></span><div><h3>Free for everyone, forever</h3><p>No accounts, no credit cards, no daily limits.</p></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section how-section" id="how-it-works" aria-labelledby="how-title">
+    <div class="container">
+      <header class="section-head" data-reveal>
+        <p class="eyebrow">Three-step workflow</p>
+        <h2 id="how-title">From photos to a polished PDF<br><span class="grad-text">in under a minute</span></h2>
+        <p class="section-sub">Click any step below to see what happens inside.</p>
+      </header>
+      <div class="how-timeline" data-how>
+        <article class="how-step is-active" data-step="1" data-reveal>
+          <button class="how-step__head" type="button" aria-expanded="true">
+            <span class="how-step__num">01</span>
+            <span class="how-step__label"><strong>Upload your images</strong><em>Drag, drop, or browse</em></span>
+            <span class="how-step__toggle" aria-hidden="true"><svg class="ic"><use href="#i-chevron-down"/></svg></span>
+          </button>
+          <div class="how-step__body">
+            <div class="how-step__inner">
+              <div class="how-step__text">
+                <p>Drop JPG, PNG, WEBP, GIF or BMP files directly into the drop zone. Every file stays in your browser's memory.</p>
+                <ul class="how-step__list">
+                  <li><svg class="ic"><use href="#i-check"/></svg> Up to 25 MB per image</li>
+                  <li><svg class="ic"><use href="#i-check"/></svg> Unlimited images per document</li>
+                  <li><svg class="ic"><use href="#i-check"/></svg> Drag to reorder, click to rotate</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </article>
+        <article class="how-step" data-step="2" data-reveal data-reveal-delay="80">
+          <button class="how-step__head" type="button" aria-expanded="false">
+            <span class="how-step__num">02</span>
+            <span class="how-step__label"><strong>Refine the composition</strong><em>Layout, quality, enhancement</em></span>
+            <span class="how-step__toggle" aria-hidden="true"><svg class="ic"><use href="#i-chevron-down"/></svg></span>
+          </button>
+          <div class="how-step__body">
+            <div class="how-step__inner">
+              <div class="how-step__text">
+                <p>Reorder and rotate images. Fine-tune page size, orientation, margins and quality.</p>
+                <ul class="how-step__list">
+                  <li><svg class="ic"><use href="#i-check"/></svg> A4, Letter, Legal, or original size</li>
+                  <li><svg class="ic"><use href="#i-check"/></svg> Auto image enhancement</li>
+                  <li><svg class="ic"><use href="#i-check"/></svg> Watermark, page numbers, PDF/A mode</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </article>
+        <article class="how-step" data-step="3" data-reveal data-reveal-delay="160">
+          <button class="how-step__head" type="button" aria-expanded="false">
+            <span class="how-step__num">03</span>
+            <span class="how-step__label"><strong>Export and share</strong><em>Download, preview, share</em></span>
+            <span class="how-step__toggle" aria-hidden="true"><svg class="ic"><use href="#i-chevron-down"/></svg></span>
+          </button>
+          <div class="how-step__body">
+            <div class="how-step__inner">
+              <div class="how-step__text">
+                <p>Hit <strong>Generate PDF</strong> — or press <kbd>Ctrl</kbd>+<kbd>↵</kbd>. Your document is composed on-device in under a second.</p>
+                <ul class="how-step__list">
+                  <li><svg class="ic"><use href="#i-check"/></svg> Sub-second rendering</li>
+                  <li><svg class="ic"><use href="#i-check"/></svg> Native share on mobile</li>
+                  <li><svg class="ic"><use href="#i-check"/></svg> Works fully offline</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt" id="formats" aria-labelledby="formats-title"><div class="container">
+    <header class="section-head" data-reveal><p class="eyebrow">Universal compatibility</p><h2 id="formats-title">Any image. One refined PDF.</h2></header>
+    <ul class="formats">
+      <li class="format-chip" data-reveal><b>JPG</b><span>JPEG</span></li>
+      <li class="format-chip" data-reveal data-reveal-delay="40"><b>PNG</b><span>Portable</span></li>
+      <li class="format-chip" data-reveal data-reveal-delay="80"><b>WEBP</b><span>Modern</span></li>
+      <li class="format-chip" data-reveal data-reveal-delay="120"><b>GIF</b><span>Graphics</span></li>
+      <li class="format-chip" data-reveal data-reveal-delay="160"><b>BMP</b><span>Bitmap</span></li>
+    </ul>
+  </div></section>
+
+  <section class="section faq-section" id="faq" aria-labelledby="faq-title">
+    <div class="container container--narrow">
+      <header class="section-head" data-reveal>
+        <p class="eyebrow">Common questions</p>
+        <h2 id="faq-title">Everything you might want to know</h2>
+      </header>
+      <div class="faq-controls" data-reveal>
+        <div class="faq-search">
+          <span class="faq-search__icon" aria-hidden="true"><svg class="ic"><use href="#i-search"/></svg></span>
+          <input type="search" id="faq-search" class="faq-search__input" placeholder="Search questions…" autocomplete="off" aria-label="Search FAQ" />
+          <button type="button" class="faq-search__clear" id="faq-clear" hidden aria-label="Clear search"><svg class="ic"><use href="#i-x"/></svg></button>
+        </div>
+        <div class="faq-cats" role="tablist" aria-label="FAQ categories">
+          <button class="faq-cat is-active" data-cat="all" role="tab" aria-selected="true">All</button>
+          <button class="faq-cat" data-cat="general" role="tab" aria-selected="false">General</button>
+          <button class="faq-cat" data-cat="privacy" role="tab" aria-selected="false">Privacy</button>
+          <button class="faq-cat" data-cat="usage" role="tab" aria-selected="false">Usage</button>
+          <button class="faq-cat" data-cat="mobile" role="tab" aria-selected="false">Mobile</button>
+        </div>
+      </div>
+      <div class="faq" id="faq-list">
+        <div class="faq-item" data-cat="general" data-reveal>
+          <button class="faq-trigger" aria-expanded="false">
+            <span class="faq-item__q">What is an image to PDF converter?</span>
+            <span class="faq-icon" aria-hidden="true"></span>
+          </button>
+          <div class="faq-body">
+            <div class="faq-body-inner">
+              <p>An image to PDF converter is a tool that takes picture files — such as JPG, PNG, WEBP or GIF — and turns them into a single PDF document. PixelPress places each image on its own PDF page and lets you control page size, orientation, margins and image quality before you download.</p>
+            </div>
+          </div>
+        </div>
+        <div class="faq-item" data-cat="general" data-reveal data-reveal-delay="40">
+          <button class="faq-trigger" aria-expanded="false">
+            <span class="faq-item__q">Is this tool free?</span>
+            <span class="faq-icon" aria-hidden="true"></span>
+          </button>
+          <div class="faq-body">
+            <div class="faq-body-inner">
+              <p>Yes, completely. There is no signup, no subscription, no watermark and no daily conversion limit.</p>
+            </div>
+          </div>
+        </div>
+        <div class="faq-item" data-cat="privacy" data-reveal data-reveal-delay="80">
+          <button class="faq-trigger" aria-expanded="false">
+            <span class="faq-item__q">Are my images uploaded anywhere?</span>
+            <span class="faq-icon" aria-hidden="true"></span>
+          </button>
+          <div class="faq-body">
+            <div class="faq-body-inner">
+              <p>No. Your files never leave your device. Every step happens locally in your browser.</p>
+            </div>
+          </div>
+        </div>
+        <div class="faq-item" data-cat="usage" data-reveal data-reveal-delay="120">
+          <button class="faq-trigger" aria-expanded="false">
+            <span class="faq-item__q">Can I convert multiple images into one PDF?</span>
+            <span class="faq-icon" aria-hidden="true"></span>
+          </button>
+          <div class="faq-body">
+            <div class="faq-body-inner">
+              <p>Absolutely. Add as many images as you like, drag the thumbnails to arrange the page order, rotate any that are sideways, and PixelPress will merge everything into one multi-page PDF document.</p>
+            </div>
+          </div>
+        </div>
+        <div class="faq-item" data-cat="mobile" data-reveal data-reveal-delay="160">
+          <button class="faq-trigger" aria-expanded="false">
+            <span class="faq-item__q">Does it work on mobile?</span>
+            <span class="faq-icon" aria-hidden="true"></span>
+          </button>
+          <div class="faq-body">
+            <div class="faq-body-inner">
+              <p>Yes. PixelPress is fully responsive and tested on Android phones, iPhones, iPads, tablets and desktops. You can also install it as an app — it will persist even after clearing browser data on Android.</p>
+            </div>
+          </div>
+        </div>
+        <div class="faq-item" data-cat="mobile" data-reveal data-reveal-delay="200">
+          <button class="faq-trigger" aria-expanded="false">
+            <span class="faq-item__q">How do I install the app?</span>
+            <span class="faq-icon" aria-hidden="true"></span>
+          </button>
+          <div class="faq-body">
+            <div class="faq-body-inner">
+              <p>Tap the <strong>Get App</strong> button in the header or the popup that appears when you visit. On <strong>Android</strong>, Chrome will prompt you to install directly as a native app. On <strong>iOS Safari</strong>, tap Share <svg class="ic" aria-hidden="true"><use href="#i-share"/></svg> → <strong>Add to Home Screen</strong> → <strong>Add</strong>.</p>
+            </div>
+          </div>
+        </div>
+        <div class="faq-item" data-cat="privacy" data-reveal data-reveal-delay="240">
+          <button class="faq-trigger" aria-expanded="false">
+            <span class="faq-item__q">Can I use it for sensitive documents?</span>
+            <span class="faq-icon" aria-hidden="true"></span>
+          </button>
+          <div class="faq-body">
+            <div class="faq-body-inner">
+              <p>Yes — PixelPress is ideal for passports, bank statements, medical records and signed contracts, because nothing ever leaves your device.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="faq-empty" id="faq-empty" hidden>
+        <svg class="faq-empty__ic"><use href="#i-search"/></svg>
+        <p>No questions match your search.</p>
+        <button type="button" class="btn btn-ghost btn-sm" id="faq-reset">Reset filters</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="about" aria-labelledby="about-title">
+    <div class="container">
+      <header class="section-head" data-reveal>
+        <p class="eyebrow">About the project</p>
+        <h2 id="about-title">About PixelPress</h2>
+        <p class="section-sub">An independent, browser-based image to PDF converter built by a small team that cares about document privacy.</p>
+      </header>
+      <div class="policy-grid">
+        <article class="policy-card" data-reveal>
+          <span class="policy-card__icon"><svg class="ic"><use href="#i-sparkles"/></svg></span>
+          <h3>Students</h3>
+          <p>Assembling lecture notes, lab reports and project files.</p>
+        </article>
+        <article class="policy-card" data-reveal data-reveal-delay="60">
+          <span class="policy-card__icon"><svg class="ic"><use href="#i-dollar"/></svg></span>
+          <h3>Freelancers &amp; small businesses</h3>
+          <p>Turning photo receipts, invoices and contracts into professional documents.</p>
+        </article>
+        <article class="policy-card" data-reveal data-reveal-delay="120">
+          <span class="policy-card__icon"><svg class="ic"><use href="#i-user-shield"/></svg></span>
+          <h3>Individuals</h3>
+          <p>Digitising passports, driving licences, insurance papers and other sensitive records.</p>
+        </article>
+        <article class="policy-card" data-reveal data-reveal-delay="180">
+          <span class="policy-card__icon"><svg class="ic"><use href="#i-file-pdf"/></svg></span>
+          <h3>Professionals</h3>
+          <p>Preparing photo evidence for legal, medical or property documentation.</p>
+        </article>
+        <article class="policy-card policy-card--wide" data-reveal data-reveal-delay="240">
+          <span class="policy-card__icon"><svg class="ic"><use href="#i-leaf"/></svg></span>
+          <div class="policy-card__body">
+            <h3>Our commitments</h3>
+            <p>PixelPress will always remain free for personal and commercial use. We will never require an account, never watermark your PDF, and never upload your files.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt" id="privacy" aria-labelledby="privacy-title">
+    <div class="container">
+      <header class="section-head" data-reveal>
+        <p class="eyebrow">Privacy Policy</p>
+        <h2 id="privacy-title">Your privacy is <span class="grad-text">built in</span></h2>
+        <p class="policy-updated"><svg class="ic"><use href="#i-check-circle"/></svg> Last updated: 2026</p>
+      </header>
+      <div class="policy-grid">
+        <article class="policy-card" data-reveal>
+          <span class="policy-card__icon"><svg class="ic"><use href="#i-image"/></svg></span>
+          <h3>Files you convert</h3>
+          <p>All image processing happens entirely within your web browser. Your images and generated PDF files are never transmitted to any server.</p>
+        </article>
+        <article class="policy-card" data-reveal data-reveal-delay="60">
+          <span class="policy-card__icon"><svg class="ic"><use href="#i-lock"/></svg></span>
+          <h3>Information we collect</h3>
+          <p>PixelPress does not use user accounts, does not require any personal information, and does not track you across websites.</p>
+        </article>
+        <article class="policy-card" data-reveal data-reveal-delay="120">
+          <span class="policy-card__icon"><svg class="ic"><use href="#i-server"/></svg></span>
+          <h3>Cookies &amp; local storage</h3>
+          <p>We use your browser's local storage to remember your theme preference and PDF settings. This data never leaves your device.</p>
+        </article>
+        <article class="policy-card" data-reveal data-reveal-delay="180">
+          <span class="policy-card__icon"><svg class="ic"><use href="#i-globe"/></svg></span>
+          <h3>Advertising</h3>
+          <p>This site may display advertisements served by Google AdSense and other third-party networks.</p>
+        </article>
+        <article class="policy-card policy-card--wide" data-reveal data-reveal-delay="240">
+          <span class="policy-card__icon"><svg class="ic"><use href="#i-share"/></svg></span>
+          <div class="policy-card__body">
+            <h3>Contact</h3>
+            <p>For privacy questions, write to <strong>privacy@pixelpress-pdf.example</strong>.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="terms" aria-labelledby="terms-title">
+    <div class="container">
+      <header class="section-head" data-reveal>
+        <p class="eyebrow">Terms of Service</p>
+        <h2 id="terms-title">Simple, fair <span class="grad-text">terms</span></h2>
+        <p class="policy-updated"><svg class="ic"><use href="#i-check-circle"/></svg> Last updated: 2026</p>
+      </header>
+      <div class="policy-grid">
+        <article class="policy-card" data-reveal>
+          <span class="policy-card__icon"><svg class="ic"><use href="#i-check-circle"/></svg></span>
+          <h3>Permitted use</h3>
+          <p>PixelPress is provided as a free tool for personal and commercial use.</p>
+        </article>
+        <article class="policy-card" data-reveal data-reveal-delay="60">
+          <span class="policy-card__icon"><svg class="ic"><use href="#i-shield"/></svg></span>
+          <h3>No warranty</h3>
+          <p>The service is provided "as is" without warranties of any kind, express or implied.</p>
+        </article>
+        <article class="policy-card" data-reveal data-reveal-delay="120">
+          <span class="policy-card__icon"><svg class="ic"><use href="#i-lock"/></svg></span>
+          <h3>Limitation of liability</h3>
+          <p>In no event shall PixelPress or its contributors be liable for any indirect, incidental or consequential damages.</p>
+        </article>
+        <article class="policy-card" data-reveal data-reveal-delay="180">
+          <span class="policy-card__icon"><svg class="ic"><use href="#i-rotate"/></svg></span>
+          <h3>Changes to the service</h3>
+          <p>We may update, modify or discontinue any part of the service at any time.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="cta-title"><div class="container">
+    <div class="cta-band" data-reveal>
+      <div class="cta-inner">
+        <span class="cta-eyebrow">Ready when you are</span>
+        <h2 id="cta-title">Create your first professional PDF today</h2>
+        <p>No signup. No uploads. No cost. Just a fast, private converter that simply works.</p>
+        <a href="#converter" class="btn btn-light btn-lg"><span>Start Converting — It's Free</span><svg class="ic"><use href="#i-arrow-right"/></svg></a>
+      </div>
+    </div>
+  </div></section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <a class="logo" href="#top" aria-label="PixelPress home">
+        <span class="logo-mark" aria-hidden="true">
+          <svg class="logo-mark__svg" viewBox="0 0 44 44"><use href="#brand-mark"/></svg>
+        </span>
+        <span class="logo-text">Pixel<em>Press</em></span>
+      </a>
+      <p class="footer-tagline">The professional, browser-based image to PDF converter. Your files never leave your device.</p>
+    </div>
+    <nav class="footer-nav" aria-label="Footer">
+      <div><h3>Product</h3><ul><li><a href="#converter">Converter</a></li><li><a href="#features">Features</a></li><li><a href="#how-it-works">How it works</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+      <div><h3>Formats</h3><ul><li><a href="#converter">JPG to PDF</a></li><li><a href="#converter">PNG to PDF</a></li><li><a href="#converter">WEBP to PDF</a></li><li><a href="#converter">GIF to PDF</a></li></ul></div>
+      <div><h3>Legal</h3><ul><li><a href="#privacy">Privacy Policy</a></li><li><a href="#terms">Terms of Service</a></li><li><a href="#about">About PixelPress</a></li></ul></div>
+    </nav>
+  </div>
+  <div class="container footer-bottom">
+    <p>&copy; <span id="year">2026</span> PixelPress. All rights reserved.</p>
+    <p class="footer-note">All conversions are performed locally in your browser.</p>
+  </div>
+</footer>
+
+<aside class="install-tip" id="install-tip" role="dialog" aria-label="Install PixelPress app" aria-live="polite">
+  <div class="install-tip__inner">
+    <div class="install-tip__icon" id="install-icon" aria-hidden="true">
+      <svg class="ic"><use href="#i-leaf"/></svg>
+    </div>
+    <div class="install-tip__content">
+      <h3 class="install-tip__title">
+        <span id="install-title-text">Get PixelPress</span>
+        <span class="install-tip__badge">Free</span>
+      </h3>
+      <p class="install-tip__desc" id="install-desc">Install the app — works offline, no account needed</p>
+      <div class="install-tip__actions">
+        <button type="button" class="install-tip__btn-primary" id="install-action">
+          <span id="install-action-label">Install</span>
+          <svg class="ic" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+        </button>
+        <button type="button" class="install-tip__btn-link" id="install-never">Don't show again</button>
+      </div>
+    </div>
+    <button type="button" class="install-tip__close" id="install-close" aria-label="Close">
+      <svg class="ic"><use href="#i-x"/></svg>
+    </button>
+  </div>
+</aside>
+
+<div class="install-modal" id="install-modal" hidden role="dialog" aria-modal="true" aria-label="App installation guide">
+  <div class="install-modal-inner">
+    <button type="button" class="install-modal-close" id="install-modal-close" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button>
+    <div class="install-modal-head">
+      <span class="install-modal-ico" id="install-modal-icon" aria-hidden="true"><svg class="ic"><use href="#i-leaf"/></svg></span>
+      <div>
+        <h3 id="install-modal-title">Install PixelPress App</h3>
+        <p id="install-modal-subtitle">Follow the steps below for your device</p>
+      </div>
+    </div>
+
+    <div class="install-tabs" id="install-tabs">
+      <button type="button" class="install-tab is-active" data-tab="android"><svg class="ic"><use href="#i-android"/></svg> Android</button>
+      <button type="button" class="install-tab" data-tab="samsung"><svg class="ic"><use href="#i-smartphone"/></svg> Samsung</button>
+      <button type="button" class="install-tab" data-tab="ios"><svg class="ic"><use href="#i-apple"/></svg> iPhone / iPad</button>
+      <button type="button" class="install-tab" data-tab="firefox"><svg class="ic"><use href="#i-globe"/></svg> Firefox</button>
+      <button type="button" class="install-tab" data-tab="opera"><svg class="ic"><use href="#i-globe"/></svg> Opera</button>
+      <button type="button" class="install-tab" data-tab="other"><svg class="ic"><use href="#i-globe"/></svg> Other</button>
+    </div>
+
+    <div class="install-panels">
+      <div class="install-panel is-active" data-panel="android">
+        <ol class="install-steps-list">
+          <li><span class="step-pill">1</span> Open <strong>Chrome</strong>, <strong>Edge</strong> or <strong>Brave</strong></li>
+          <li><span class="step-pill">2</span> Tap the <strong>⋮ menu</strong> (top-right)</li>
+          <li><span class="step-pill">3</span> Tap <strong>Install app</strong> or <strong>Add to Home screen</strong></li>
+          <li><span class="step-pill">4</span> Tap <strong>Install</strong> to confirm</li>
+          <li><span class="step-pill">5</span> The PixelPress icon appears on your home screen — <strong>persists even after clearing browser data</strong></li>
+        </ol>
+      </div>
+      <div class="install-panel" data-panel="samsung">
+        <ol class="install-steps-list">
+          <li><span class="step-pill">1</span> Open <strong>Samsung Internet</strong></li>
+          <li><span class="step-pill">2</span> Tap the <strong>☰ menu</strong> (bottom-right)</li>
+          <li><span class="step-pill">3</span> Tap <strong>Add page to</strong> → <strong>Home screen</strong></li>
+          <li><span class="step-pill">4</span> Tap <strong>Add</strong> to confirm</li>
+        </ol>
+      </div>
+      <div class="install-panel" data-panel="ios">
+        <ol class="install-steps-list">
+          <li><span class="step-pill">1</span> Open this page in <strong>Safari</strong></li>
+          <li><span class="step-pill">2</span> Tap the <svg class="ic"><use href="#i-share"/></svg> <strong>Share</strong> button</li>
+          <li><span class="step-pill">3</span> Scroll and tap <strong>Add to Home Screen</strong></li>
+          <li><span class="step-pill">4</span> Tap <strong>Add</strong></li>
+        </ol>
+        <div class="install-note">
+          <svg class="ic"><use href="#i-shield"/></svg>
+          <p>iOS does not allow PWA installation from Chrome, Firefox or Edge. Please use Safari.</p>
+        </div>
+      </div>
+      <div class="install-panel" data-panel="firefox">
+        <ol class="install-steps-list">
+          <li><span class="step-pill">1</span> Open <strong>Firefox</strong></li>
+          <li><span class="step-pill">2</span> Tap the <strong>⋮ menu</strong></li>
+          <li><span class="step-pill">3</span> Tap <strong>Install</strong> or <strong>Add to Home screen</strong></li>
+        </ol>
+      </div>
+      <div class="install-panel" data-panel="opera">
+        <ol class="install-steps-list">
+          <li><span class="step-pill">1</span> Open <strong>Opera</strong></li>
+          <li><span class="step-pill">2</span> Tap the <strong>☰ menu</strong></li>
+          <li><span class="step-pill">3</span> Tap <strong>Add to Home screen</strong></li>
+        </ol>
+      </div>
+      <div class="install-panel" data-panel="other">
+        <ol class="install-steps-list">
+          <li><span class="step-pill">1</span> Open your browser menu</li>
+          <li><span class="step-pill">2</span> Look for <strong>Install app</strong> or <strong>Add to Home Screen</strong></li>
+          <li><span class="step-pill">3</span> Confirm the installation</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="install-modal-foot">
+      <p><svg class="ic"><use href="#i-leaf"/></svg> Mobile app · Free forever · Works offline · No account required</p>
+    </div>
+  </div>
+</div>
+
+<div class="img-modal" id="img-modal" hidden role="dialog" aria-modal="true" aria-label="Image preview">
+  <button type="button" class="img-modal-close" id="img-modal-close" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button>
+  <button type="button" class="img-modal-nav img-modal-prev" id="img-modal-prev" aria-label="Previous"><svg class="ic"><use href="#i-chevron-left"/></svg></button>
+  <button type="button" class="img-modal-nav img-modal-next" id="img-modal-next" aria-label="Next"><svg class="ic"><use href="#i-chevron-right"/></svg></button>
+  <div class="img-modal-stage">
+    <img id="img-modal-img" alt="" />
+    <h3 id="img-modal-title" class="img-modal-title"></h3>
+    <p id="img-modal-meta" class="img-modal-meta"></p>
+  </div>
+</div>
+
+<button type="button" class="scroll-fab" id="scroll-fab" aria-label="Back to top"><svg class="ic"><use href="#i-arrow-up"/></svg></button>
+
+<div class="toast-wrap" aria-live="polite" aria-atomic="true">
+  <div class="toast" id="toast" hidden>
+    <span class="toast-msg" id="toast-msg"></span>
+    <button type="button" class="toast-action" id="toast-action" hidden></button>
+  </div>
+</div>
+
+<script src="script.js" defer></script>
+</body>
+</html>
